@@ -1,18 +1,44 @@
-name: SonarQube Scan
+name: Provision and Scan Workflow
 
 on:
   push:
     branches: [ main ]
 
 jobs:
-  scan:
+  provision:
+    name: Provision Infrastructure
     runs-on: self-hosted
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+  scan:
+    name: SonarQube Scan
+    runs-on: self-hosted
+    needs: provision
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
       - name: Run SonarQube Scan
         run: |
-          sonar-scanner \
-            -Dsonar.projectKey=my-project \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=http://localhost:<NodePort> \
+          sonar-scanner ^
+            -Dsonar.projectKey=my-project ^
+            -Dsonar.sources=. ^
+            -Dsonar.host.url=http://localhost:<NodePort> ^
             -Dsonar.login=<your-token>
+
