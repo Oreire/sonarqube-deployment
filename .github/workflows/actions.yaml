@@ -18,12 +18,15 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+        working-directory: ./Terra
 
       - name: Terraform Plan
         run: terraform plan
+        working-directory: ./Terra
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        working-directory: ./Terra
 
   scan:
     name: SonarQube Scan
