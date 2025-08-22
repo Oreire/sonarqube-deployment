@@ -31,6 +31,12 @@ jobs:
       - name: Save Terraform Outputs
         run: terraform output -json > tf_outputs.json
         working-directory: ./Terra
+    
+      - name: Upload Terraform Outputs
+        uses: actions/upload-artifact@v3
+        with:
+            name: tf-outputs
+            path: ./Terra/tf_outputs.json
 
   scan:
     name: SonarQube Scan
@@ -45,6 +51,12 @@ jobs:
       - name: Add SonarScanner to PATH
         run: |
           $env:PATH += ";C:\SonarScanner\sonar-scanner-5.0.1.3006-windows\bin"
+    
+      - name: Download Terraform Outputs
+        uses: actions/download-artifact@v3
+        with:
+          name: tf-outputs
+          path: ./Terra/tf_outputs.json
 
       - name: Load Terraform Outputs
         id: tf
@@ -61,3 +73,4 @@ jobs:
             -Dsonar.sources=. ^
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} ^
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
