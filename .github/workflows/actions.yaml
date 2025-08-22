@@ -29,20 +29,15 @@ jobs:
         working-directory: ./Terra
 
       - name: Save Terraform Outputs
-        run: |
-            terraform output -json > tf_outputs.json
-
-    #   - name: Upload Terraform Outputs
-    #     uses: actions/upload-artifact@v3
-    #     with:
-    #         name: tf_outputs
-    #         path: tf_outputs.json
+        run: terraform output -json > tf_outputs.json
+        working-directory: ./Terra
 
   scan:
     name: SonarQube Scan
     runs-on: self-hosted
     needs: provision
-    
+    if: success()  # Only run if 'provision' job succeeds
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -51,26 +46,18 @@ jobs:
         run: |
           $env:PATH += ";C:\SonarScanner\sonar-scanner-5.0.1.3006-windows\bin"
 
-    #   - name: Download Terraform Outputs
-    #     uses: actions/download-artifact@v3
-    #     with:
-    #       name: tf_outputs
-    #       path: tf_outputs.json
-
       - name: Load Terraform Outputs
         id: tf
         run: |
-            $outputs = Get-Content tf_outputs.json | ConvertFrom-Json
-            echo "SONAR_URL=$($outputs.sonarqube_url.value)" >> $env:GITHUB_ENV
-            echo "SONAR_TOKEN=$($outputs.sonarqube_token.value)" >> $env:GITHUB_ENV
-            echo "NODE_PORT=$($outputs.sonarqube_node_port.value)" >> $env:GITHUB_ENV
-            
+          $outputs = Get-Content ./Terra/tf_outputs.json | ConvertFrom-Json
+          echo "SONAR_URL=$($outputs.sonarqube_url.value)" >> $env:GITHUB_ENV
+          echo "SONAR_TOKEN=$($outputs.sonarqube_token.value)" >> $env:GITHUB_ENV
+          echo "NODE_PORT=$($outputs.sonarqube_node_port.value)" >> $env:GITHUB_ENV
+
       - name: Run SonarQube Scan
         run: |
           sonar-scanner ^
             -Dsonar.projectKey=my-project ^
             -Dsonar.sources=. ^
-            -Dsonar.host.url=$env:SONAR_URL ^
-            -Dsonar.login=$env:SONAR_TOKEN
-            -Dsonar.host.url=http://localhost:$env:NODE_PORT ^
-            
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} ^
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
