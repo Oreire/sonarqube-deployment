@@ -20,6 +20,10 @@ jobs:
         run: terraform init
         working-directory: ./Terra
 
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./Terra
+
       - name: Terraform Plan
         run: terraform plan
         working-directory: ./Terra
@@ -37,7 +41,7 @@ jobs:
         with:
             name: tf-outputs
             path: ./Terra/tf_outputs.json
-
+            
   scan:
     name: SonarQube Scan
     runs-on: self-hosted
@@ -56,16 +60,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: tf-outputs
-          path: ./Terra/tf_outputs.json
+          path: ./tf-data
 
       - name: Load Terraform Outputs
         id: tf
         run: |
-          $outputs = Get-Content ./Terra/tf_outputs.json | ConvertFrom-Json
+          $outputs = Get-Content ./tf-data/tf_outputs.json | ConvertFrom-Json
           echo "SONAR_URL=$($outputs.sonarqube_url.value)" >> $env:GITHUB_ENV
           echo "SONAR_TOKEN=$($outputs.sonarqube_token.value)" >> $env:GITHUB_ENV
           echo "NODE_PORT=$($outputs.sonarqube_node_port.value)" >> $env:GITHUB_ENV
 
+     
       - name: Run SonarQube Scan
         run: |
           sonar-scanner ^
