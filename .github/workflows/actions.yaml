@@ -35,7 +35,7 @@ jobs:
         working-directory: ./Terra
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -var="kube_config_path=C:\Users\ajayi\.kube\config"
         working-directory: ./Terra
 
       - name: Save Terraform Outputs

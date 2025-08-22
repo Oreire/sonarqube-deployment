@@ -9,3 +9,9 @@ variable "sonar_token" {
   type        = string
   sensitive   = true
 }
+
+variable "kube_config_path" {
+  type    = string
+  default = "~/.kube/config" # Optional fallback
+}
+

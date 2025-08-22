@@ -1,6 +1,7 @@
 provider "helm" {
   kubernetes {
-    config_path = "${pathexpand("~/.kube/config")}"
+    config_path = var.kube_config_path
+
   }
 }
 
