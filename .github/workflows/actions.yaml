@@ -33,7 +33,7 @@ jobs:
         working-directory: ./Terra
     
       - name: Upload Terraform Outputs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.1
         with:
             name: tf-outputs
             path: ./Terra/tf_outputs.json
