@@ -33,7 +33,7 @@ jobs:
         working-directory: ./Terra
     
       - name: Upload Terraform Outputs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: tf-outputs
             path: ./Terra/tf_outputs.json
@@ -53,7 +53,7 @@ jobs:
           $env:PATH += ";C:\SonarScanner\sonar-scanner-5.0.1.3006-windows\bin"
     
       - name: Download Terraform Outputs
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tf-outputs
           path: ./Terra/tf_outputs.json
