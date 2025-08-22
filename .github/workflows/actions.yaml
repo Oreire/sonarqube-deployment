@@ -16,6 +16,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: Set up Kubectl
+        run: |
+          echo "KUBE_CONFIG_PATH=$HOME/.kube/config" >> $env:GITHUB_ENV
+          echo "KUBE_VERSION=latest" >> $env:GITHUB_ENV
+          kubectl config use-context docker-desktop
+
       - name: Terraform Init
         run: terraform init
         working-directory: ./Terra
