@@ -43,32 +43,6 @@ kubectl get svc -n sonarqube
 
 Visit `http://localhost:<NodePort>` in your browser.
 
----
-
-🤖 GitHub Actions Workflow
-
-name: SonarQube Scan
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  scan:
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run SonarQube Scan
-        run: |
-          sonar-scanner \
-            -Dsonar.projectKey=my-project \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=http://localhost:<NodePort> \
-            -Dsonar.login=<your-token>
-
-
----
-
 🔐 Security & Governance
 
 • Quality Gates block insecure code
