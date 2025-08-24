@@ -64,3 +64,36 @@ Educator-Technologist | DevOps Practitioner | Safeguarding-Aware Innovator
 📄 License
 
 MIT License
+
+
+GOLANG
+package main
+
+import (
+	"fmt"
+	"net/http"
+)
+
+func portfolioHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, `
+		<html>
+			<head><title>Ayomide Ajayi - Portfolio</title></head>
+			<body>
+				<h1>Welcome to Ayomide's Portfolio</h1>
+				<p><strong>Name:</strong> John Doe</p>
+				<p><strong>Age:</strong> 30</p>
+				<p><strong>Student:</strong> false</p>
+				<p><strong>Height:</strong> 5.9</p>
+				<p><strong>Weight:</strong> 160.5</p>
+				<p><strong>Grades:</strong> 90, 85, 88</p>
+			</body>
+		</html>
+	`)
+}
+
+func main() {
+	http.HandleFunc("/", portfolioHandler)
+	fmt.Println("Server running on port 8080...")
+	http.ListenAndServe(":8080", nil)
+}
+
